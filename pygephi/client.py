@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 # coding: utf-8
 #
@@ -21,7 +22,7 @@ Allow a Python script to communicate with Gephi using the Gephi Graph Streaming 
 
 __author__ = 'panisson@gmail.com'
 
-import urllib2
+import urllib.request
 try:
     import json
 except ImportError:
@@ -56,7 +57,7 @@ class JSONClient(object):
             self.data = ""
         
     def _send(self, data):
-        print 'passing'
+        print ('passing')
         pass
         
     def add_node(self, id, flush=True, **attributes):
@@ -90,7 +91,7 @@ class GephiClient(JSONClient):
         self.url = url
         
     def _send(self, data):
-        conn = urllib2.urlopen(self.url+ '?operation=updateGraph', data)
+        conn = urllib.request.urlopen(self.url+ '?operation=updateGraph', data.encode('utf-8'))
         return conn.read()
     
 class GephiFileHandler(JSONClient):
@@ -101,4 +102,4 @@ class GephiFileHandler(JSONClient):
         self.out = out
         
     def _send(self, data):
-        self.out.write(data)
+        self.out.write(data.encode('utf-8'))

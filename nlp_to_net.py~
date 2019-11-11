@@ -1,0 +1,32 @@
+import string
+from pathlib import Path
+import stanfordnlp
+
+def process(text, nlp, lang, wanted_pos):
+    try:
+        text = text.translate(str.maketrans('', '', string.punctuation))
+        token = nlp(text)
+        words = {word for sent in token.sentences for word in sent.words}
+        wanted_words = set(filter(lambda word: word.upos in wanted_pos, words))
+        wanted_words = ','.join(word.lemma for word in wanted_words if word)
+        return wanted_words
+    except:
+        return ''
+
+
+if __name__ == '__main__':
+
+    # Choose language
+    lang = 'da'
+
+    # Chose wanted_pos
+    wp = {'NOUN'}
+
+    # Download model for nlp.
+    stanford_path = Path.home() / 'stanfordnlp_resources' / f'{lang}_ddt_models'
+    if not stanford_path.exists():
+        stanfordnlp.download(lang)
+
+    nlp = stanfordnlp.Pipeline(processors='tokenize,lemma,pos', lang=lang)
+
+    

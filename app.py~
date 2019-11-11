@@ -1,0 +1,19 @@
+from flask import Flask, render_template, request, redirect
+
+app = Flask(__name__)
+
+@app.route("/", methods=["GET", "POST"])
+def hello():
+    if request.method == "POST":
+
+        req = request.form
+
+        draw_nodes(req['Text'])
+
+        return redirect(request.url)
+
+    return render_template("index.html")
+
+if __name__ == '__main__':
+    ### Flask ###  
+    app.run(debug = True)
