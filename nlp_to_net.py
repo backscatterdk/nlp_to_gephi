@@ -34,11 +34,19 @@ def draw_nodes(text, nlp):
     # Add edges
     combos = list(itertools.combinations(nouns, r=2))
     for i, combo in enumerate(combos):
-        g.add_edge(id=f'{combo[0]}-{combo[1]}', source=combo[0],
-                   target=combo[1], directed=False)
+        combo = tuple(sorted(list(combo)))
+        if combo in WEIGHTS.keys():
+            WEIGHTS[combo] += 1
+            attr = {'weight': WEIGHTS[combo]}
+            g.change_edge(id=f'{combo[0]}-{combo[1]}', **attr)
+        else:
+            WEIGHTS[combo] = 1
+            attr = {'directed': False, 'weight': WEIGHTS[combo]}
+            g.add_edge(id=f'{combo[0]}-{combo[1]}', source=combo[0],
+                       target=combo[1], **attr)
 
 
-# Download model for nlp.
+# Download model for nlp
 stanford_path = Path.home() / 'stanfordnlp_resources' / f'da_ddt_models'
 if not stanford_path.exists():
     stanfordnlp.download('da')
@@ -46,3 +54,6 @@ if not stanford_path.exists():
 # Set up Gephi client
 g = pygephi.GephiClient('http://localhost:8080/workspace1', autoflush=True)
 g.clean()
+
+# Keep track of edgelist (for weights)
+WEIGHTS = dict()

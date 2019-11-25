@@ -79,6 +79,9 @@ class JSONClient(object):
         attributes['directed'] = directed
         self.data += json.dumps(self.peh({"ae":{id:attributes}})) + '\r\n'
         if(self.autoflush): self.flush()
+
+    def change_edge(self, id, flush=True, **attributes):
+        self.data += json.dumps(self.peh({"ce":{id:attributes}})) + '\r\n'
     
     def delete_edge(self, id):
         self._send(json.dumps(self.peh({"de":{id:{}}})) + '\r\n')
